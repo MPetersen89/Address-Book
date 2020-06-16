@@ -49,18 +49,16 @@ Contact.prototype.fullName = function() {
 }
 
 // User Interface Logic ---------
-let addressBook = new AddressBook();
-
 function displayContactDetails(addressBookToDisplay) {
   let contactsList = $("ul#contacts");
   let htmlForContactInfo = "";
   addressBookToDisplay.contacts.forEach(function(contact) {
-    htmlForContactInfo += "<li id=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
+    htmlForContactInfo += "<li class=" + contact.id + ">" + contact.firstName + " " + contact.lastName + "</li>";
   });
   contactsList.html(htmlForContactInfo);
 };
 
-function showContact(contactId) {
+function showContact(contactId, addressBook) {
   const contact = addressBook.findContact(contactId);
   $("#show-contact").show();
   $(".first-name").html(contact.firstName);
@@ -68,22 +66,26 @@ function showContact(contactId) {
   $(".phone-number").html(contact.phoneNumber);
   let buttons = $("#buttons");
   buttons.empty();
-  buttons.append("<button class='deleteButton' id=" + contact.id + ">Delete</button>");
+  buttons.append(`<button class='deleteButton ${contact.id}'>Delete</button>`);
 }
 
-function attachContactListeners() {
+function attachContactListeners(addressBook) {
   $("ul#contacts").on("click", "li", function() {
-    showContact(this.id);
+    console.log("The id of this <li> is " + $(this).attr("class") + ".");
+    showContact($(this).attr("class"), addressBook);
   });
   $("#buttons").on("click", ".deleteButton", function() {
-    addressBook.deleteContact(this.id);
+    let id = $(this).attr("class");
+    let sanitizedId = id.slice(12);
+    addressBook.deleteContact(sanitizedId);
     $("#show-contact").hide();
     displayContactDetails(addressBook);
   });
 };
 
 $(document).ready(function() {
-  attachContactListeners();
+  let addressBook = new AddressBook();
+  attachContactListeners(addressBook);
   $("form#new-contact").submit(function(event) {
     event.preventDefault();
     const inputtedFirstName = $("input#new-first-name").val();
