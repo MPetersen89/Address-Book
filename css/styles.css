@@ -1,0 +1,18 @@
+#inputContact {
+  text-align: center;
+  background-color: aquamarine;
+  height: 80vh;
+}
+
+button {
+  margin-top: 1em;
+}
+
+.currentContacts {
+  text-align: center;
+  display: none;
+}
+
+#show-contact {
+  display: none;
+}
